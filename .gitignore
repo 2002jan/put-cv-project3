@@ -1,2 +1,8 @@
 /data
 /logs
+/model_snapshots
+.idea
+
+*.jpg
+
+output_images/
