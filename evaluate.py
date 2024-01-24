@@ -12,7 +12,7 @@ from train import ImageDestructionType, destroy_image, load_img, ssim_loss
 models_folder = "model_snapshots"
 
 
-def load_model(model_path):
+def load_model(model_path, compile=True):
     model_params = model_path.split("/")[-1].split("_")
     optimizer = model_params[1]
     loss = model_params[2] if model_params[2] != 'ssim' else ssim_loss
@@ -27,7 +27,9 @@ def load_model(model_path):
     )
 
     loaded_model.load_weights(f"{model_path}/model.hdf5")
-    loaded_model.compile(loss=loss, optimizer=optimizer, metrics=[ssim_loss, 'mse', 'mae'])
+
+    if compile:
+        loaded_model.compile(loss=loss, optimizer=optimizer, metrics=[ssim_loss, 'mse', 'mae'])
 
     return loaded_model
 
@@ -62,7 +64,7 @@ def evaluate_model(model, step=200):
             for img in images:
                 images_destroyed.append(destroy_image(img, augment_type))
 
-            images_destroyed = np.array(images_destroyed) / 255.0
+            images_destroyed = np.array(images_destroyed)
 
             vals = model.evaluate(images_destroyed, images, verbose=0)
 

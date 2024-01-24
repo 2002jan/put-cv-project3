@@ -4,3 +4,5 @@
 .idea
 
 *.jpg
+
+output_images/
