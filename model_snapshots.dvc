@@ -1,0 +1,5 @@
+outs:
+- md5: 905ca3de600665d846ac29746e673cd6.dir
+  size: 2832571180
+  nfiles: 12
+  path: model_snapshots

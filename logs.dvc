@@ -1,0 +1,5 @@
+outs:
+- md5: 970b1c02465f36bdb7bb55ced73623e7.dir
+  size: 39808248
+  nfiles: 12
+  path: logs
