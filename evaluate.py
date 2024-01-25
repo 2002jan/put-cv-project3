@@ -10,6 +10,17 @@ import numpy as np
 from train import ImageDestructionType, destroy_image, load_img, ssim_loss
 
 models_folder = "model_snapshots"
+evaluate_output = "evaluate_outputs"
+
+
+def type_to_string(aug_type: ImageDestructionType) -> str:
+    match aug_type:
+        case ImageDestructionType.EASY:
+            return 'Easy'
+        case ImageDestructionType.MEDIUM:
+            return 'Medium'
+        case ImageDestructionType.HARD:
+            return 'Hard'
 
 
 def load_model(model_path, compile=True):
@@ -34,7 +45,7 @@ def load_model(model_path, compile=True):
     return loaded_model
 
 
-def evaluate_model(model, step=250):
+def evaluate_model(model, step=200):
     images_paths = os.listdir("data")
 
     augmentation_types = list(ImageDestructionType)
@@ -45,13 +56,15 @@ def evaluate_model(model, step=250):
 
     iterations = 0
 
-    for i in range(0, len(images_paths), step):
+    all_img = len(images_paths)
+
+    for i in range(0, all_img, step):
         iterations += 1
 
         images = []
 
         for j, img_path in enumerate(images_paths[i:i + step]):
-            print("Processing image {}/{}".format(j + 1, step), end="\r")
+            print("Processing image {}/{}".format(i + j + 1, all_img), end="\r")
             images.append(load_img(f"data/{img_path}"))
 
         images = np.array(images) / 255.0
@@ -85,27 +98,44 @@ def evaluate_model(model, step=250):
 def main():
     models = os.listdir(models_folder)
 
-    losses = {}
+    print("Select model (default: 1)")
 
-    for model_path in models:
-        model_params = model_path.split("_")
-        optimizer = model_params[1]
-        loss = model_params[2]
+    for i, model in enumerate(models):
+        print(f"{i + 1}. {model[1:]}")
 
-        if optimizer != "adam" or loss != 'ssim':
-            continue
+    selected_model = int(input())
 
-        model = load_model(f"{models_folder}/{models[0]}")
+    if selected_model < 1 or selected_model > len(models) + 1:
+        selected_model = 0
+    else:
+        selected_model -= 1
 
-        print(f"Calculating loss for {model_path[1:]}")
+    model_path = models[selected_model]
+    model_name = " ".join(model_path[1:].split("_"))
 
-        model_losses = evaluate_model(model)
+    model = load_model(f"{models_folder}/{models[0]}")
 
-        losses[model_params[0][1:]] = model_losses
+    print(f"Calculating loss for {model_path[1:]}")
 
-    for model_name, losses in losses.items():
-        print(f"Losses for {model_name}")
-        print(losses)
+    losses = evaluate_model(model)
+
+    os.makedirs(evaluate_output, exist_ok=True)
+    model_output_path = f"{evaluate_output}/{model_path[1:]}.txt"
+
+    if os.path.isfile(model_output_path):
+        os.remove(model_output_path)
+
+    with open(model_output_path, "w") as output_file:
+
+        output_file.write(f"Losses for {model_name}\n\n")
+
+        for augmentation_type in list(ImageDestructionType):
+            output_file.write(f"Losses for difficulty: {type_to_string(augmentation_type)}\n")
+
+            output_file.write(f"SSIM: {losses[augmentation_type][1]}\n")
+            output_file.write(f"MSE: {losses[augmentation_type][2]}\n")
+            output_file.write(f"MAE: {losses[augmentation_type][3]}\n")
+            output_file.write("------------------------\n")
 
 
 if __name__ == '__main__':

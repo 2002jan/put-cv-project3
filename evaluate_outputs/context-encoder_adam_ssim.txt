@@ -1,0 +1,17 @@
+Losses for context-encoder adam ssim
+
+Losses for difficulty: Easy
+SSIM: 0.059182554259896276
+MSE: 0.000439017879543826
+MAE: 0.011681892555207013
+------------------------
+Losses for difficulty: Medium
+SSIM: 0.08247840493917465
+MSE: 0.0010913233296014368
+MAE: 0.015164934806525707
+------------------------
+Losses for difficulty: Hard
+SSIM: 0.1617681711912155
+MSE: 0.00368819585070014
+MAE: 0.027626429349184037
+------------------------

@@ -1,0 +1,17 @@
+Losses for concatenated adam ssim
+
+Losses for difficulty: Easy
+SSIM: 0.0592462682723999
+MSE: 0.0004406443418702111
+MAE: 0.011689504720270633
+------------------------
+Losses for difficulty: Medium
+SSIM: 0.08248471200466156
+MSE: 0.0010939290188252927
+MAE: 0.015180139355361461
+------------------------
+Losses for difficulty: Hard
+SSIM: 0.16146751314401628
+MSE: 0.003666998273693025
+MAE: 0.027578750886023046
+------------------------

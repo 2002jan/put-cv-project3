@@ -1,0 +1,17 @@
+Losses for unet-extended adam ssim
+
+Losses for difficulty: Easy
+SSIM: 0.05920275405049324
+MSE: 0.0004397757543483749
+MAE: 0.011685292441397906
+------------------------
+Losses for difficulty: Medium
+SSIM: 0.08254930675029755
+MSE: 0.0010961880977265537
+MAE: 0.015192219074815511
+------------------------
+Losses for difficulty: Hard
+SSIM: 0.1616181406378746
+MSE: 0.003676496190018952
+MAE: 0.027579753398895263
+------------------------
