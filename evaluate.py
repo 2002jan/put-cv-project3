@@ -1,6 +1,6 @@
 import os
 
-# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 import tensorflow as tf
 from tensorflow import keras
@@ -34,7 +34,7 @@ def load_model(model_path, compile=True):
     return loaded_model
 
 
-def evaluate_model(model, step=200):
+def evaluate_model(model, step=250):
     images_paths = os.listdir("data")
 
     augmentation_types = list(ImageDestructionType)
@@ -53,8 +53,6 @@ def evaluate_model(model, step=200):
         for j, img_path in enumerate(images_paths[i:i + step]):
             print("Processing image {}/{}".format(j + 1, step), end="\r")
             images.append(load_img(f"data/{img_path}"))
-
-        print("")
 
         images = np.array(images) / 255.0
 
@@ -79,15 +77,35 @@ def evaluate_model(model, step=200):
         for i in range(4):
             losses[augment_type][i] /= iterations
 
+    print("")
+
     return losses
 
 
 def main():
     models = os.listdir(models_folder)
-    model = load_model(f"{models_folder}/{models[0]}")
 
-    model_losses = evaluate_model(model)
-    print(model_losses)
+    losses = {}
+
+    for model_path in models:
+        model_params = model_path.split("_")
+        optimizer = model_params[1]
+        loss = model_params[2]
+
+        if optimizer != "adam" or loss != 'ssim':
+            continue
+
+        model = load_model(f"{models_folder}/{models[0]}")
+
+        print(f"Calculating loss for {model_path[1:]}")
+
+        model_losses = evaluate_model(model)
+
+        losses[model_params[0][1:]] = model_losses
+
+    for model_name, losses in losses.items():
+        print(f"Losses for {model_name}")
+        print(losses)
 
 
 if __name__ == '__main__':

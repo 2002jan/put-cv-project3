@@ -1,6 +1,7 @@
 import os
 from enum import Enum
-# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 import tensorflow as tf
 from tensorflow import keras
@@ -33,7 +34,7 @@ def get_img_destruction_params(destruction_type: ImageDestructionType):
             return 15, 20, 25, 40
 
 
-def load_img(path, img_size = (256,256)):
+def load_img(path, img_size=(256, 256)):
     img = cv2.imread(path)
     img = cv2.resize(img, img_size)
 
@@ -177,5 +178,28 @@ def train_test(
     cv2.imwrite("test.jpg", output_img)
 
 
+def main():
+    models = [
+        Concatenated(),
+        ContextEncoder(),
+        UNetExtended(),
+        UNetModel(),
+    ]
+
+    print("Select model (default: 1)")
+
+    for i, model in enumerate(models):
+        print(f"{i + 1}. {model.get_name()}")
+
+    selected_model = int(input())
+
+    if selected_model < 1 or selected_model > len(models) + 1:
+        selected_model = 0
+    else:
+        selected_model -= 1
+
+    train_test(models[selected_model])
+
+
 if __name__ == "__main__":
-    train_test(ContextEncoder())
+    main()
