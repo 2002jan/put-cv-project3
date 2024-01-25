@@ -7,3 +7,5 @@
 
 output_images/
 model_diagrams/
+
+*.ipynb
